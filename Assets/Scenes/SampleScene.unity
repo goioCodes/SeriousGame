@@ -225,7 +225,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 621155759}
-  - component: {fileID: 621155758}
   - component: {fileID: 621155760}
   m_Layer: 0
   m_Name: GameController
@@ -234,30 +233,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &621155758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621155757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183c210f2e84b9f45a6d75853af9b0c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldMap: {fileID: 1032829573}
-  waterTile: {fileID: 11400000, guid: a17f11b30004248449555990e4a52deb, type: 2}
-  earthTiles:
-  - {fileID: 11400000, guid: 2bfeade9d0952064baba208c712a1c33, type: 2}
-  - {fileID: 11400000, guid: 0f467debbe323ed4aa601d4c976cbc47, type: 2}
-  - {fileID: 11400000, guid: 168f1eeac9edb68469f0086f6975ccac, type: 2}
-  - {fileID: 11400000, guid: 596faf075f4cd8e4a9eeb9effbec3144, type: 2}
-  - {fileID: 11400000, guid: 54b1f39b0c477374983e5d77ff8e4df8, type: 2}
-  - {fileID: 11400000, guid: 8b3496645b4a5f54d855879ad24f8685, type: 2}
-  - {fileID: 11400000, guid: a5bbddacf0df3aa49bc8a49e0d788f67, type: 2}
-  - {fileID: 11400000, guid: 084d1772c2ba76f4198c3fed907ec763, type: 2}
-  - {fileID: 11400000, guid: 873051009ea21084ba97cd76c3f9167d, type: 2}
 --- !u!4 &621155759
 Transform:
   m_ObjectHideFlags: 0
