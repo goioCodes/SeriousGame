@@ -26,7 +26,7 @@ public class MovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Make this look at the ship's whele
+        // TODO:Make this look at the ship's wheel
         rb.rotation += Input.GetAxis(horizontalAxis)*-5;
 
         Vector2 forward = new Vector2(Mathf.Cos(rb.rotation * Mathf.Deg2Rad), Mathf.Sin(rb.rotation * Mathf.Deg2Rad));
