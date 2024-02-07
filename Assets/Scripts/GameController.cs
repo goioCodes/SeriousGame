@@ -7,47 +7,127 @@ public class GameController : MonoBehaviour
 {
     public Tilemap backgroundPrefab; // Reference to your background sprite prefab
 
-    public Tile waterTile; // Reference to your background tile prefab
-    public Tile groundTile;
+    public Tile waterTile; // Reference to the background water tile 
+    public Tile groundTile; // Reference to the background ground tile 
+    public List <Tile> tiles; // Reference to the background corners and borders tile 
+
+    public GameObject ship;
 
     //public Transform player; // Reference to your player's transform
     public float backgroundDistanceThreshold = 10f; // Distance at which backgrounds will be spawned
     
     public float thres; // Distance at which backgrounds will be spawned
-    public float scale;
-    private float nextBackgroundSpawnTime = 0f; 
+    public float scale; 
+
+    private GameObject shipInstance;
 
     private void Start()
     {
-       
-        SpawnBackground();
+        //GameObject.gamecomponent()
+        shipInstance = GameObject.Instantiate(ship, new Vector3(0, 0, 0), Quaternion.identity);
+        //SpawnBackground();
     }
     private void Update()
     {
-        SpawnBackground();
+    
     }
 
+    private void FixedUpdate()
+    {
+        SpawnBackground();
+    }
     private void SpawnBackground()
     {
         float height;
-        for (int x = -50; x < 50; x++)
+
+        Vector2 pos_vec = shipInstance.GetComponent<MovementController>().map_position;
+
+        Vector2 pos_vec_int = new Vector2(Mathf.Floor(pos_vec.x), Mathf.Floor(pos_vec.y));
+
+        Vector2 pos_vec_dec = new Vector2(pos_vec.x - pos_vec_int.x, pos_vec.y - pos_vec_int.y);
+
+        backgroundPrefab.gameObject.transform.position = -pos_vec_dec;
+
+        for (int x = -70; x < 70; x++)
         {
-            for (int y = -50; y < 50; y++)
+            for (int y = -70; y < 70; y++)
             {
-                height = Mathf.PerlinNoise(1000 + x * scale, 1000 + y * scale);
+                // Calculate Perlin noise values for surrounding tiles
+                float top = Mathf.PerlinNoise(1000 + (x + pos_vec_int.x) * scale, 1000 + ((y + pos_vec_int.y) + 1) * scale);
+                float left = Mathf.PerlinNoise(1000 + ((x + pos_vec_int.x) - 1) * scale, 1000 + (y + pos_vec_int.y) * scale);
+                float right = Mathf.PerlinNoise(1000 + ((x + pos_vec_int.x) + 1) * scale, 1000 + (y + pos_vec_int.y) * scale);
+                float bottom = Mathf.PerlinNoise(1000 + (x + pos_vec_int.x) * scale, 1000 + ((y + pos_vec_int.y) - 1) * scale);
 
                 Tile currentTile;
-                if (height < thres)
+
+                height = Mathf.PerlinNoise(1000 + (x + pos_vec_int.x) * scale , 1000 + (y + pos_vec_int.y) * scale);
+
+                if (height > thres)
                 {
-                    currentTile = waterTile;
+                    currentTile = GetCornerOrBorderTile(top, left, right, bottom);
                 }
                 else
                 {
-                    currentTile = groundTile;
+                    currentTile = waterTile;
                 }
 
                 backgroundPrefab.SetTile(new Vector3Int(x, y, 0), currentTile);
             }
         }
+    }
+    private Tile GetCornerOrBorderTile(float top, float left, float right, float bottom)
+{
+    // Define conditions for each corner and border based on surrounding Perlin noise values
+
+    // Top-left corner
+    if (top < thres && left < thres)
+    {
+        return tiles[0];
+    }
+
+    // Top-right corner
+    if (top < thres && right < thres)
+    {
+        return tiles[2];
+    }
+
+    // Bottom-left corner
+    if (left < thres && bottom < thres)
+    {
+        return tiles[5];
+    }
+
+    // Bottom-right corner
+    if (bottom < thres && right < thres)
+    {
+        return tiles[7];
+    }
+
+    // Top border
+    if (top < thres)
+    {
+        return tiles[1];
+    }
+
+    // Bottom border
+    if (bottom < thres)
+    {
+        return tiles[6];
+    }
+
+    // Left border
+    if (left < thres)
+    {
+        return tiles[3];
+    }
+
+    // Right border
+    if (right < thres)
+    {
+        return tiles[4];
+    }
+
+    // Default to groundTile if none of the above conditions are met
+    return groundTile;
     }
 }
