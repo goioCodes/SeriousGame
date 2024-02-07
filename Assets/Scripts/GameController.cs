@@ -82,7 +82,6 @@ public class GameController : MonoBehaviour
         Vector2 pos_vec_dec = new Vector2(pos_vec.x - pos_vec_int.x, pos_vec.y - pos_vec_int.y);
 
         backgroundPrefab.gameObject.transform.position = -pos_vec_dec;
-        thres = 1;
 
         for (int x = -70; x < 70; x++)
         {
