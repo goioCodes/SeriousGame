@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
 public class GameController : MonoBehaviour
 {
     public Tilemap backgroundPrefab; // Reference to your background sprite prefab
@@ -10,21 +11,27 @@ public class GameController : MonoBehaviour
     public Tile waterTile; // Reference to the background water tile 
     public Tile groundTile; // Reference to the background ground tile 
     public List <Tile> tiles; // Reference to the background corners and borders tile 
+    public List <GameObject> enemies; // Reference to the background corners and borders tile 
 
     public GameObject ship;
+    public GameObject enemy;
 
     //public Transform player; // Reference to your player's transform
     public float backgroundDistanceThreshold = 10f; // Distance at which backgrounds will be spawned
     
     public float thres; // Distance at which backgrounds will be spawned
     public float scale; 
+    public int num_enemies; // number of enemies, change with difficulty
 
     private GameObject shipInstance;
+
+    
 
     private void Start()
     {
         //GameObject.gamecomponent()
-        shipInstance = GameObject.Instantiate(ship, new Vector3(0, 0, 0), Quaternion.identity);
+        shipInstance = GameObject.Instantiate(ship, new Vector3(0, 0, -1), Quaternion.identity);
+        enemies = new List<GameObject>();
         //SpawnBackground();
     }
     private void Update()
@@ -35,18 +42,47 @@ public class GameController : MonoBehaviour
     private void FixedUpdate()
     {
         SpawnBackground();
+        SpawnEnemies();
+        UpdateEnemies();
     }
+    
+    private void UpdateEnemies(){
+        Vector2 pos_vec = shipInstance.GetComponent<MovementController>().map_position;
+
+
+        foreach (var enemy in enemies) {
+            Rigidbody2D rb;
+            
+            enemy.GetComponent<BadGuy>().player_pos = pos_vec;
+        }
+    }
+    
+    private void SpawnEnemies()
+    {
+    	while (enemies.Count < num_enemies)
+    	{
+            int randx = Random.Range(-20, 20);
+            int randy = Random.Range(-20, 20);
+            
+            GameObject newObj = Instantiate(enemy, new Vector3(randx, randy, -3), Quaternion.identity);
+            newObj.transform.SetParent(transform);
+            newObj.SetActive(true);
+            enemies.Add(newObj);
+            
+    	}
+    
+    }
+
     private void SpawnBackground()
     {
         float height;
 
         Vector2 pos_vec = shipInstance.GetComponent<MovementController>().map_position;
-
         Vector2 pos_vec_int = new Vector2(Mathf.Floor(pos_vec.x), Mathf.Floor(pos_vec.y));
-
         Vector2 pos_vec_dec = new Vector2(pos_vec.x - pos_vec_int.x, pos_vec.y - pos_vec_int.y);
 
         backgroundPrefab.gameObject.transform.position = -pos_vec_dec;
+        thres = 1;
 
         for (int x = -70; x < 70; x++)
         {
