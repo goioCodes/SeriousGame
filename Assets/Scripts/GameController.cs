@@ -5,6 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController gameController;
+
     public Tilemap backgroundPrefab; // Reference to your background sprite prefab
 
     public Tile waterTile; // Reference to the background water tile 
@@ -17,19 +19,39 @@ public class GameController : MonoBehaviour
     public float backgroundDistanceThreshold = 10f; // Distance at which backgrounds will be spawned
     
     public float thres; // Distance at which backgrounds will be spawned
-    public float scale; 
+    public float scale;
 
-    private GameObject shipInstance;
+    public GameObject arrowSprite;
+    public GameObject arrowShipView;
+    public float windChangeInterval;
+    float lastWindChangeTime;
+    public Vector2 windDirection { get; private set; }
+    public Vector2 windDirectionShipView {  get; private set; }
+
+    GameObject shipInstance;
 
     private void Start()
     {
+        gameController = this;
         //GameObject.gamecomponent()
         shipInstance = GameObject.Instantiate(ship, new Vector3(0, 0, 0), Quaternion.identity);
         //SpawnBackground();
+        windDirection = Random.insideUnitCircle.normalized;
+        lastWindChangeTime = Time.time;
+        arrowSprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(windDirection.y, windDirection.x));
+        arrowShipView.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * (Mathf.Atan2(windDirection.y, windDirection.x) - Mathf.Atan2(shipInstance.transform.right.y, shipInstance.transform.right.x)) + 90);
     }
     private void Update()
     {
-    
+        if(Time.time - lastWindChangeTime > windChangeInterval)
+        {
+            windDirection = Random.insideUnitCircle;
+            arrowSprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(windDirection.y, windDirection.x));
+            lastWindChangeTime = Time.time;
+        }
+        float shipViewWindAngle = Mathf.Rad2Deg * (Mathf.Atan2(windDirection.y, windDirection.x) - Mathf.Atan2(shipInstance.transform.right.y, shipInstance.transform.right.x)) + 90;
+        arrowShipView.transform.rotation = Quaternion.Euler(0, 0, shipViewWindAngle);
+        windDirectionShipView = new Vector2(Mathf.Cos(shipViewWindAngle * Mathf.Deg2Rad), Mathf.Sin(shipViewWindAngle * Mathf.Deg2Rad));
     }
 
     private void FixedUpdate()
